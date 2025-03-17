@@ -134,7 +134,7 @@ portal.
 To obtain the client-id, you'll have to register on Yahoo portal, then follow
 this [Yahoo API tutorial](https://developer.yahoo.com/oauth2/guide/flows_authcode/).
 
-![Yahoo App registration](Yahoo.png)
+![Yahoo App registration](docs/Yahoo.png)
 
 Be adviced that registering localhost applications such https://localhost:7165
 on the Yahoo portal is for test purpose only. notice also that you MUST modify
@@ -181,6 +181,15 @@ to Loki using the following environment variables :
 * `LOKI__ENABLEREQUESTRESPONSELOGGINGON4XXAND5XX`: boolean value (true or false)
 defaulted to false. When true, 400 and 500 HTTP Error are logged with full
 context.
+
+## Setup
+
+Once deployed, the tool will have to be setup. To help customer in this step,
+we make available setup files in the [setup repository](setup/).
+You should download the last avalaible setup file, and use the configuration
+management tool to import it. A few second later, all hardware / firmware /
+parameter_sets / default configurations will be loaded in your database so that
+you will be able to define your own configuration and apply them to any device.
 
 ## Limits
 
