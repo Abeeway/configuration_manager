@@ -4,6 +4,10 @@ Abeeway configuration manager is a tool that allow users to define devices
 configuration and to garantee that these configurations will be kept in place
 during all the device's life.
 
+This ropository explains how to it works, how to deploy and how to import
+pre-defined settings. The docker image can be found on
+[dockerhub](https://hub.docker.com/r/abeeway/configuration_manager).
+
 ## How does it work ?
 
 ### Parameter sets / Firmwares / default configurations
@@ -18,9 +22,8 @@ to another, parameter sets could evolve as well as default configuration. That's
 the reason why firmaware is a unique combination of hardware / parameter set /
 default configuration for a specific code revision.
 
-Parameter sets / hardwares / firmwares / default configurations are defined by
-Abeeway a shared to their customer via an export file available at the following
-address : [ConfManSetting on GitHub](https://github....).
+For pre defined Parameter sets / hardwares / firmwares / default configurations,
+please jump to setup section.
 
 ### Configurations
 
