@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: abeeway-api-configurationmanager-v1-app
+  labels:
+    app: abeeway-api-configurationmanager-v1-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: abeeway-api-configurationmanager-v1-app
+  template:
+    metadata:
+      labels:
+        app: abeeway-api-configurationmanager-v1-app
+    spec:
+      containers:
+        - name: abeeway-api-configurationmanager-v1
+          image: abeeway/configuration_manager:latest
+          ports:
+          - containerPort: 8080
+          env:
+          - name: AUTHENTICATION__APIKEY
+            valueFrom:
+              secretKeyRef:
+                name: abeeway.api.configurationmanager.v1-sharedsecret
+                key: AUTHENTICATION__APIKEY
+          - name: LNS__ACTILITY__APIKEY
+            valueFrom:
+              secretKeyRef:
+                name: abeeway.api.configurationmanager.v1-secret
+                key: LNS__ACTILITY__APIKEY
+          - name: LNS__ACTILITY__AS_ID
+            valueFrom:
+              secretKeyRef:
+                name: abeeway.api.configurationmanager.v1-secret
+                key: LNS__ACTILITY__AS_ID
+          - name: LNS__ACTILITY__AS_AUTHKEY
+            valueFrom:
+              secretKeyRef:
+                name: abeeway.api.configurationmanager.v1-secret
+                key: LNS__ACTILITY__AS_AUTHKEY
+          - name: RDB__PWD
+            valueFrom:
+              secretKeyRef:
+                name: abeeway.api.configurationmanager.v1-secret
+                key: RDB__PWD
+          - name: LOKI__URI
+            valueFrom:
+              secretKeyRef:
+                name: loki-sharedsecret
+                key: LOKI__URI
+          - name: LOKI__LOGIN
+            valueFrom:
+              secretKeyRef:
+                name: loki-sharedsecret
+                key: LOKI__LOGIN
+          - name: LOKI__PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: loki-sharedsecret
+                key: LOKI__PASSWORD
+          - name: LOKI__ENABLEREQUESTRESPONSELOGGINGON4XXAND5XX
+            valueFrom:
+              secretKeyRef:
+                name: loki-sharedsecret
+                key: LOKI__ENABLEREQUESTRESPONSELOGGINGON4XXAND5XX
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: abeeway-api-configurationmanager-v1-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: abeeway-api-configurationmanager-v1-app
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: abeeway-api-configurationmanager-v1-ingress
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+spec:
+  tls:
+    - secretName: abeeway-configurationmanager-cert
+  rules:
+  - host: [Your URI]
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: abeeway-api-configurationmanager-v1-service
+            port:
+              number: 80
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: abeeway-configurationmanager-cert
+  namespace: default
+spec:
+  commonName: [Your URI]
+  secretName: abeeway-configurationmanager-cert
+  dnsNames:
+    - [Your URI]
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
