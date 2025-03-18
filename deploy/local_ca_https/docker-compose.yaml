@@ -1,0 +1,43 @@
+services:
+
+  traefik:
+    image: "traefik:v3.3"
+    container_name: "traefik"
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--providers.file.filename=/etc/traefik/traefik-dynamic.yml"
+      - "--log.level=DEBUG"
+      - "--accesslog=true"
+      - "--accesslog.addinternals"
+
+    ports:
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - ./certs:/etc/certs:ro
+      - ./traefik/traefik-dynamic.yml:/etc/traefik/traefik-dynamic.yml:ro
+
+  configuration_manager:
+    image: "abeeway/configuration_manager:latest"
+    container_name: "configuration_manager"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.configuration_manager.rule=Host(`localhost`)"
+      - "traefik.http.routers.configuration_manager.entrypoints=websecure"
+      - "traefik.http.routers.configuration_manager.tls=true"
+      - "traefik.http.services.configuration_manager.loadbalancer.server.port=8080"
+    volumes:
+      - "/c/Temp/Abeeway:/var/abeeway"
+    environment:
+      - RDB__PROVIDERNAME=sqlite
+      - RDB__CONNECTIONSTRING=Data Source=/var/abeeway/confman.db
+      - IDENTITY__AUTHORITY=https://api.login.yahoo.com
+      - IDENTITY__METADATA-ADDRESS=https://login.yahoo.com/.well-known/openid-configuration
+      - IDENTITY__CLIENT-ID=[your Client ID]
+      - IDENTITY__ADMIN-EMAIL=[the email adress of the administrator]
+      - AUTHENTICATION__APIKEY=[Whatever key you want]
+      - LNS__ACTILITY__OPERATOR_HOSTNAME=[acme.thingpark.com]

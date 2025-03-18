@@ -76,7 +76,7 @@ This tool rely on docker. You'll find to different configuration file :
 ### Docker-compose
 
 With the view to test our tool, the minimum configuration could be defined like
-this : [docker-compose.yaml](deploy/docker-compose.yaml).
+this : [docker-compose.yaml](deploy/generic/docker-compose.yaml).
 
 You'll be able to navigate to [https://localhost](https://localhost).
 
@@ -87,7 +87,7 @@ evaluation purposes. There is no certificate resolver, for example.
 
 You'll find an example of kubernetes deployment file in an environment relying
 on [Traefik](https://traefik.io) and [Let's encrypt](https://letsencrypt.org)
-at the following url : [kubernetes-manifest.yaml](deploy/kubernetes-manifest.yaml).
+at the following url : [kubernetes-manifest.yaml](deploy/generic/kubernetes-manifest.yaml).
 
 ## Environment variables
 
@@ -109,8 +109,8 @@ variable that will replace `{pwd}` in the connection string.
 
 ### Users
 
-Users can be identified using OpenID infrastructure. To do so, you'll need
-to specify following variables :
+Users are identified using OpenID infrastructure. To do so, the tool needs an
+OpenID authorithy. To define one, you've got to specify following variables :
 
 * `IDENTITY__AUTHORITY`: this is the url of the authority that is used for
 identification ;
@@ -123,11 +123,10 @@ the administrator of the tool.
 
 #### Yahoo OpenID Connect Provider
 
-If you don't have an OpenID architecture, you can use 
+If you don't have an OpenID architecture, you can use one of the following :
 [OpenID Connect providers](https://connect2id.com/products/nimbus-oauth-openid-connect-sdk/openid-connect-providers)
-such as Google or Microsoft. If you wan't to use a very simple yet powerfull 
-OpenID  Connect Provider, we suggest using Yahoo. In this case, the settings are
-the following :
+If you wan't to use a very simple yet powerfull OpenID  Connect Provider, we
+suggest using Yahoo. In this case, the settings are the following :
 
 * `IDENTITY__AUTHORITY`: `https://api.login.yahoo.com` ;
 * `IDENTITY__METADATA-ADDRESS`: `https://login.yahoo.com/.well-known/openid-configuration` ;
@@ -157,6 +156,27 @@ A good exemple of strong API Key could be a string generated using openssl :
 ```bash
 openssl rand --hex64 36
 ```
+
+### HTTPS certificate for locahost
+
+*Remark: This step is not mandatory.*
+
+If you want a self signed certificate for your test environment in docker
+compose, you'll have to use a specific 
+[docker-compose.yaml](deploy/local_ca_https/docker-compose.yaml) file, once
+you'll have generated self-signed certificate using the mkcert tool. Here are
+the steps:
+
+* download mkcert tool ;
+* go to the folder containing `docker-compose.yaml` file ;
+* go to certs folder ;
+* execute
+`mkcert -cert-file local-cert.pem -key-file local-key.pem "localhost"`.
+* execute `mkcert -install`: it will install a local certificate authority
+which will certify generated certificates.
+
+Once back in the parent folder and docker compose launched, the
+[localhost](https://localhost) will be trusted.
 
 ### LNS related variables
 
