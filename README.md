@@ -221,3 +221,32 @@ has following limitations :
 
 * if uplink/downlink security is activated, uplink security token won't be
 checked ;
+
+## Glossary
+
+* _parameter_set_ : this is the starting point of this tool. A _parameter_set_ 
+is the entity that allow us to define all parameters, and maximum and minimum
+values ;
+* _firmware_ : a release of our AT3 source code built for a specific hardware
+and for which a _parameter_set_ and a default _configuration_ will be defined ;
+* _physical_parameter_ : definition of a parameter for a specified 
+_parameter_set_. Concretely, this is a parameter, as defined in the AT3 spec, 
+with its identifier (`P0305` for example) ;
+* _logical_parameter_ : this is a parameter that is defined upon a 
+_physical_parameter_. It exists when a _physical_parameter_ is defined as a
+enumeration and / or a bitfield ;
+* _configuration_ : this is a collection of parameter values for a specific
+_parameter_set_ ;
+* _device_ : a device, identified by its _eui_ ;
+* _running_configuration_ : the configuration that is actually ran in the
+device ;
+* _default_configuration_ : the configuration that is supposed to run in the
+device when it has just been produced or when it has been reset ;
+* _current_configuration_ : the configuration that is supposed to run in the
+device. This is a backend data ;
+* _target_configuration_ : the configuration that the user want to send to the
+device. This configuration is infered by using tags defined both at device and
+configuration levels ;
+* _transient_configuration_ : the configuration that the tool will generate
+to move from a given configuration toward the target configuration in one or
+more steps.
